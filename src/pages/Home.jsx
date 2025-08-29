@@ -14,7 +14,6 @@ const Home = () => {
   const handleFilterChange = (newFilters) => {
     setFilters(newFilters);
     // You can also trigger API calls or filter products here
-    console.log("Filters changed:", newFilters);
   };
   return (
     <div className="w-[100%] flex flex-col items-center">

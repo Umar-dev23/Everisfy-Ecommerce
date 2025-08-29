@@ -1,6 +1,7 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import OrderSummary from "@/components/orderSummary";
 import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 const Checkout = () => {
   const navigate = useNavigate();
@@ -14,31 +15,13 @@ const Checkout = () => {
   const [zipCode, setZipCode] = useState("");
   const [paymentMethod, setPaymentMethod] = useState("cod");
 
-  const [products, setProducts] = useState([
-    {
-      id: 1,
-      title: "SanDisk SSD PLUS 1TB Internal SSD - SATA III 6 Gb/s",
-      price: 109,
-      description:
-        "Easy upgrade for faster boot up, shutdown, application load and response. Boosts burst write performance, making it ideal for typical PC workloads. Read/write speeds of up to 535MB/s/450MB/s.",
-      category: "electronics",
-      image: "https://fakestoreapi.com/img/61U7T1koQqL._AC_SX679_t.png",
-      rating: { rate: 2.9, count: 470 },
-      quantity: 1,
-    },
-    {
-      id: 2,
-      title:
-        "Silicon Power 256GB SSD 3D NAND A55 SLC Cache Performance Boost SATA III 2.5",
-      price: 109,
-      description:
-        "3D NAND flash for high transfer speeds. Supports TRIM command, Garbage Collection technology, RAID, and ECC for reliability. Slim 7mm design for ultra-thin laptops.",
-      category: "electronics",
-      image: "https://fakestoreapi.com/img/71kWymZ+c+L._AC_SX679_t.png",
-      rating: { rate: 4.8, count: 319 },
-      quantity: 1,
-    },
-  ]);
+  const cart = useSelector((state) => state.productReducer?.cart ?? []);
+  const [products, setProducts] = useState([]);
+
+  
+  useEffect(() => {
+    setProducts(cart);
+  }, []);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -57,7 +40,7 @@ const Checkout = () => {
   };
 
   return (
-    <div className="min-h-screen border-green-400 border flex flex-row gap-10 w-full py-12 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen flex flex-row gap-10 w-full py-12 px-4 sm:px-6 lg:px-8">
       <div className=" mx-auto bg-white border-green-400 border rounded-lg shadow-md overflow-hidden">
         <div className="p-6">
           <h1 className="text-2xl font-bold text-green-500 mb-6">
@@ -305,7 +288,9 @@ const Checkout = () => {
             <div className="flex flex-col-reverse sm:flex-row justify-between gap-4 mt-8">
               <button
                 type="button"
-                onClick={()=>{navigate("/cart")}}
+                onClick={() => {
+                  navigate("/cart");
+                }}
                 className="px-6 py-3 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50 transition-colors"
               >
                 Back to Cart

@@ -8,8 +8,8 @@ import image4 from "@/assets/4-BOjBM7re.png";
 
 const Hero = () => {
   return (
-    <div className="relative w-[120%] bg-amber-500 mb-8">
-      <div className="h-90 w-full  sm:h-104 xl:h-110 2xl:h-116">
+    <div className="relative w-[100%] mb-8">
+      <div className="h-90 w-full overflow-hidden  sm:h-104 xl:h-110 2xl:h-116">
         <Carousel
           slide={true}
           slideInterval={3000}

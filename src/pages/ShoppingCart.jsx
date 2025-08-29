@@ -1,76 +1,74 @@
-import { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Alert } from "flowbite-react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Star } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
+import { clearAll, removeProduct, updateProduct } from "@/redux/slice";
 
 const ShoppingCart = () => {
   const navigate = useNavigate();
-  const [cartItems, setCartItems] = useState([
-    {
-      id: 1,
-      title: "SanDisk SSD PLUS 1TB Internal SSD - SATA III 6 Gb/s",
-      price: 109,
-      description:
-        "Easy upgrade for faster boot up, shutdown, application load and response. Boosts burst write performance, making it ideal for typical PC workloads. Read/write speeds of up to 535MB/s/450MB/s.",
-      category: "electronics",
-      image: "https://fakestoreapi.com/img/61U7T1koQqL._AC_SX679_t.png",
-      rating: { rate: 2.9, count: 470 },
-      quantity: 1,
-    },
-    {
-      id: 2,
-      title:
-        "Silicon Power 256GB SSD 3D NAND A55 SLC Cache Performance Boost SATA III 2.5",
-      price: 109,
-      description:
-        "3D NAND flash for high transfer speeds. Supports TRIM command, Garbage Collection technology, RAID, and ECC for reliability. Slim 7mm design for ultra-thin laptops.",
-      category: "electronics",
-      image: "https://fakestoreapi.com/img/71kWymZ+c+L._AC_SX679_t.png",
-      rating: { rate: 4.8, count: 319 },
-      quantity: 1,
-    },
-  ]);
+  const dispatch = useDispatch();
 
-  // Quantity control
+  const cart = useSelector((state) => state.productReducer?.cart ?? []);
+
+  const [cartItems, setCartItems] = useState([]);
+
+  // sync local state whenever redux cart changes
+  useEffect(() => {
+    setCartItems(cart);
+  }, [cart]);
+
   const updateQuantity = (id, delta) => {
-    setCartItems((items) =>
-      items.map((item) =>
+    setCartItems((items) => {
+      const updatedItems = items.map((item) =>
         item.id === id
           ? {
               ...item,
-              quantity: Math.max(0, item.quantity + delta), // min 1
+              quantity: Math.max(0, item.quantity + delta),
             }
           : item
-      )
-    );
+      );
+      // Find the updated item and dispatch the update
+      const updatedItem = updatedItems.find((item) => item.id === id);
+      if (updatedItem) {
+        dispatch(updateProduct(updatedItem));
+      }
+      return updatedItems;
+    });
   };
 
   const removeItem = (id) => {
-    setCartItems(cartItems.filter((item) => item.id !== id));
+    setCartItems((items) => items.filter((item) => item.id !== id));
+    dispatch(removeProduct(id));
   };
 
-  // Totals
+  // CLEAR CART: dispatch the redux action
+  const handleClearCart = () => {
+    dispatch(clearAll());
+    // optional: also clear local state immediately for UI responsiveness
+    setCartItems([]);
+  };
+
+  // Totals (derived from local cartItems which mirrors redux cart)
   const subtotal = cartItems.reduce(
     (total, item) => total + item.price * item.quantity,
     0
   );
-  let storePickup;
-  if (subtotal == 0) {
-    storePickup = 0;
-  } else {
-    storePickup = 99;
-  }
-
+  const shippingCost = 0;
   const tax = subtotal * 0.08;
-  const total = subtotal + storePickup + tax;
+  const total = subtotal + shippingCost + tax;
 
   return (
     <div className="container mx-auto px-4 py-4">
       <div className="flex py-3 justify-between">
         <h1 className="text-3xl font-bold text-gray-900 mb-6">Shopping Cart</h1>
-        <Button className="w-[10%] bg- border-red-600 border-2 text-red-600 mt-6" size="lg">
+        <Button
+          onClick={handleClearCart}
+          className="w-[10%] bg- border-red-600 border-2 text-red-600 mt-6"
+          size="lg"
+        >
           Clear Cart
         </Button>
       </div>
@@ -178,10 +176,10 @@ const ShoppingCart = () => {
               </div>
 
               <div className="flex justify-between">
-                <span>Store Pickup</span>
-                <span>${storePickup.toFixed(2)}</span>
+                <span className="text-gray-600">Shipping:</span>
+                <span className="font-medium text-green-600">Free</span>
               </div>
-
+              
               <div className="flex justify-between">
                 <span>Tax</span>
                 <span>${tax.toFixed(2)}</span>
@@ -195,7 +193,13 @@ const ShoppingCart = () => {
               </div>
             </div>
 
-            <Button onClick={()=>{navigate("/checkout")}} className="w-full bg-green-600 mt-6" size="lg">
+            <Button
+              onClick={() => {
+                navigate("/checkout");
+              }}
+              className="w-full bg-green-600 mt-6"
+              size="lg"
+            >
               Proceed to Checkout
             </Button>
 
