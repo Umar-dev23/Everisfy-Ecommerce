@@ -1,41 +1,27 @@
 import React, { useState } from "react";
 import { Send, User, Mail, MessageSquare, Phone } from "lucide-react";
-import ContactCard from "@/components/ContactCard";
-import { useForm } from "react-hook-form";
+import { useForm, useFieldArray } from "react-hook-form";
+import { DevTool } from "@hookform/devtools";
 
-const contactData = [
-  {
-    icon: MessageSquare,
-    iconColor: "#16a34a", // green
-    iconBg: "#dcfce7", // light green
-    title: "Live Chat",
-    description: "Available 24/7",
-  },
-  {
-    icon: Phone,
-    iconColor: "#2563eb", // blue
-    iconBg: "#dbeafe", // light blue
-    title: "Call Us",
-    description: "+123 456 7890",
-  },
-  {
-    icon: Mail,
-    iconColor: "#d97706", // orange
-    iconBg: "#fef3c7", // light orange
-    title: "Email",
-    description: "support@example.com",
-  },
-];
 const ContactUs = () => {
   const form = useForm({
     defaultValues: {
       name: "",
       email: "",
       message: "",
+      stdInfo: {
+        roll: "",
+        class: "",
+      },
+      tags: [{ tag: "" }],
     },
   });
-  const { register, handleSubmit, formState } = form;
+  const { register, control, handleSubmit, formState } = form;
   const { errors } = formState;
+  const { fields, append, remove } = useFieldArray({
+    name: "tags",
+    control,
+  });
 
   function onSubmit(data) {
     console.log("data in From: ", data);
@@ -165,6 +151,83 @@ const ContactUs = () => {
           </div>
         </div>
 
+        <div>
+          <label
+            htmlFor="roll"
+            className="block text-sm font-medium text-gray-700 mb-1"
+          >
+            Roll <span className="text-red-500">*</span>
+          </label>
+          <div className="relative">
+            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+              <User className="h-5 w-5 text-gray-400" />
+            </div>
+            <input
+              type="text"
+              id="roll"
+              {...register("stdInfo.roll")}
+              className="pl-10 w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-colors"
+            />
+          </div>
+        </div>
+        <div>
+          <label
+            htmlFor="class"
+            className="block text-sm font-medium text-gray-700 mb-1"
+          >
+            Class <span className="text-red-500">*</span>
+          </label>
+          <div className="relative">
+            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+              <User className="h-5 w-5 text-gray-400" />
+            </div>
+            <input
+              type="text"
+              id="class"
+              {...register("stdInfo.class")}
+              className="pl-10 w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-colors"
+            />
+          </div>
+        </div>
+
+        <div>
+          <label htmlFor="tags">Add Tags</label>
+          <div>
+            {fields.map((item, index) => {
+              return (
+                <div className="relative" key={item.id}>
+                  <input
+                    type="text"
+                    id="tags"
+                    {...register(`tags.${index}.tag`)}
+                    className="pl-10 w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-colors"
+                  />
+                  {index > 0 && (
+                    <button
+                      type="button"
+                      className="border rounded-lg border-red-500 px-3 py-1"
+                      onClick={() => {
+                        remove(index);
+                      }}
+                    >
+                      Remove
+                    </button>
+                  )}
+                </div>
+              );
+            })}
+            <button
+              type="button"
+              className="border rounded-lg border-black px-3 py-1"
+              onClick={() => {
+                append({ tag: "" });
+              }}
+            >
+              Add Tag
+            </button>
+          </div>
+        </div>
+
         {/* Submit Button */}
         <button
           type="submit"
@@ -174,12 +237,8 @@ const ContactUs = () => {
           Send Message
         </button>
       </form>
-
-      <div className="grid grid-cols-1 mt-10 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        {contactData.map((item, index) => (
-          <ContactCard key={index} {...item} />
-        ))}
-      </div>
+      <DevTool control={control} />
+    
     </div>
   );
 };
