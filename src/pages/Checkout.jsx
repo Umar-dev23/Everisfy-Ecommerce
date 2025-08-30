@@ -1,3 +1,4 @@
+// src/pages/Checkout.jsx
 import { useEffect, useState } from "react";
 import OrderSummary from "@/components/OrderSummary";
 import { useNavigate } from "react-router-dom";
@@ -15,13 +16,15 @@ const Checkout = () => {
   const [zipCode, setZipCode] = useState("");
   const [paymentMethod, setPaymentMethod] = useState("cod");
 
-  const cart = useSelector((state) => state.productReducer?.cart ?? []);
+  const cart = useSelector(
+    (stateRedux) => stateRedux.productReducer?.cart ?? []
+  );
   const [products, setProducts] = useState([]);
 
-  
+  // keep products in sync with redux cart
   useEffect(() => {
     setProducts(cart);
-  }, []);
+  }, [cart]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -36,278 +39,294 @@ const Checkout = () => {
       state,
       zipCode,
       paymentMethod,
+      products,
     });
   };
 
   return (
-    <div className="min-h-screen flex flex-row gap-10 w-full py-12 px-4 sm:px-6 lg:px-8">
-      <div className=" mx-auto bg-white border-green-400 border rounded-lg shadow-md overflow-hidden">
-        <div className="p-6">
-          <h1 className="text-2xl font-bold text-green-500 mb-6">
-            {" "}
-            Checkout Now to Get your Product soon!!
+    <div className="bg-gray-50 min-h-screen py-8">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Page header */}
+        <div className="mb-6">
+          <h1 className="text-2xl text-center sm:text-3xl font-bold text-green-600">
+            Checkout
           </h1>
+          <p className="text-sm text-center text-gray-600 mt-1">
+            Fill in your details and choose a payment method to place the order.
+          </p>
+        </div>
 
-          <form onSubmit={handleSubmit}>
-            {/* Contact Information */}
-            <div className="mb-8">
-              <h2 className="text-xl font-semibold text-gray-800 mb-4">
-                Contact Information
+        {/* layout: single column on mobile, form (2) + summary (1) on lg */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          {/* Form area - spans 2 columns on large screens */}
+          <div className="lg:col-span-2">
+            <div className="bg-white rounded-lg shadow-sm p-4 sm:p-6">
+              <h2 className="text-lg sm:text-xl font-semibold text-gray-800 mb-4">
+                Contact & Shipping
               </h2>
 
-              <div className="mb-4">
-                <label
-                  htmlFor="email"
-                  className="block text-sm font-medium text-gray-700 mb-1"
-                >
-                  Email Address *
-                </label>
-                <input
-                  type="email"
-                  id="email"
-                  required
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="Enter your email address"
-                  className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-green-500 focus:border-green-500"
-                />
-              </div>
+              <form onSubmit={handleSubmit} className="space-y-6">
+                {/* Contact */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    <label
+                      htmlFor="email"
+                      className="block text-sm font-medium text-gray-700"
+                    >
+                      Email Address *
+                    </label>
+                    <input
+                      id="email"
+                      type="email"
+                      required
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      placeholder="you@example.com"
+                      className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-green-500 focus:border-green-500"
+                    />
+                  </div>
 
-              <div className="mb-4">
-                <label
-                  htmlFor="phone"
-                  className="block text-sm font-medium text-gray-700 mb-1"
-                >
-                  Phone Number *
-                </label>
-                <input
-                  type="tel"
-                  id="phone"
-                  required
-                  value={phone}
-                  onChange={(e) => setPhone(e.target.value)}
-                  placeholder="Phone number"
-                  className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-green-500 focus:border-green-500"
-                />
-              </div>
+                  <div>
+                    <label
+                      htmlFor="phone"
+                      className="block text-sm font-medium text-gray-700"
+                    >
+                      Phone Number *
+                    </label>
+                    <input
+                      id="phone"
+                      type="tel"
+                      required
+                      value={phone}
+                      onChange={(e) => setPhone(e.target.value)}
+                      placeholder="+92 3xx xxx xxxx"
+                      className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-green-500 focus:border-green-500"
+                    />
+                  </div>
+                </div>
 
-              <div className="border-t border-gray-200 my-6"></div>
-            </div>
+                <hr className="border-t border-gray-200" />
 
-            {/* Shipping Address */}
-            <div className="mb-8">
-              <h2 className="text-xl font-semibold text-gray-800 mb-4">
-                Shipping Address
-              </h2>
+                {/* Name */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label
+                      htmlFor="firstName"
+                      className="block text-sm font-medium text-gray-700"
+                    >
+                      First Name *
+                    </label>
+                    <input
+                      id="firstName"
+                      type="text"
+                      required
+                      value={firstName}
+                      onChange={(e) => setFirstName(e.target.value)}
+                      placeholder="John"
+                      className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-green-500 focus:border-green-500"
+                    />
+                  </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                  <div>
+                    <label
+                      htmlFor="lastName"
+                      className="block text-sm font-medium text-gray-700"
+                    >
+                      Last Name *
+                    </label>
+                    <input
+                      id="lastName"
+                      type="text"
+                      required
+                      value={lastName}
+                      onChange={(e) => setLastName(e.target.value)}
+                      placeholder="Doe"
+                      className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-green-500 focus:border-green-500"
+                    />
+                  </div>
+                </div>
+
+                {/* Address */}
                 <div>
                   <label
-                    htmlFor="firstName"
-                    className="block text-sm font-medium text-gray-700 mb-1"
+                    htmlFor="address"
+                    className="block text-sm font-medium text-gray-700"
                   >
-                    First Name *
+                    Street Address *
                   </label>
                   <input
+                    id="address"
                     type="text"
-                    id="firstName"
                     required
-                    value={firstName}
-                    onChange={(e) => setFirstName(e.target.value)}
-                    placeholder="First Name"
-                    className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-green-500 focus:border-green-500"
+                    value={address}
+                    onChange={(e) => setAddress(e.target.value)}
+                    placeholder="Street, Apartment, Suite, etc."
+                    className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-green-500 focus:border-green-500"
                   />
                 </div>
 
-                <div>
-                  <label
-                    htmlFor="lastName"
-                    className="block text-sm font-medium text-gray-700 mb-1"
-                  >
-                    Last Name *
-                  </label>
-                  <input
-                    type="text"
-                    id="lastName"
-                    required
-                    value={lastName}
-                    onChange={(e) => setLastName(e.target.value)}
-                    placeholder="Last Name"
-                    className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-green-500 focus:border-green-500"
-                  />
-                </div>
-              </div>
+                {/* City / State / ZIP */}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div>
+                    <label
+                      htmlFor="city"
+                      className="block text-sm font-medium text-gray-700"
+                    >
+                      City *
+                    </label>
+                    <input
+                      id="city"
+                      type="text"
+                      required
+                      value={city}
+                      onChange={(e) => setCity(e.target.value)}
+                      placeholder="Lahore"
+                      className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-green-500 focus:border-green-500"
+                    />
+                  </div>
 
-              <div className="mb-4">
-                <label
-                  htmlFor="address"
-                  className="block text-sm font-medium text-gray-700 mb-1"
-                >
-                  Street Address *
-                </label>
-                <input
-                  type="text"
-                  id="address"
-                  required
-                  value={address}
-                  onChange={(e) => setAddress(e.target.value)}
-                  placeholder="Street Address, Apartment, Suite, etc."
-                  className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-green-500 focus:border-green-500"
-                />
-              </div>
+                  <div>
+                    <label
+                      htmlFor="state"
+                      className="block text-sm font-medium text-gray-700"
+                    >
+                      State / Province *
+                    </label>
+                    <input
+                      id="state"
+                      type="text"
+                      required
+                      value={state}
+                      onChange={(e) => setState(e.target.value)}
+                      placeholder="Punjab"
+                      className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-green-500 focus:border-green-500"
+                    />
+                  </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-                <div>
-                  <label
-                    htmlFor="city"
-                    className="block text-sm font-medium text-gray-700 mb-1"
-                  >
-                    City *
-                  </label>
-                  <input
-                    type="text"
-                    id="city"
-                    required
-                    value={city}
-                    onChange={(e) => setCity(e.target.value)}
-                    placeholder="City"
-                    className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-green-500 focus:border-green-500"
-                  />
-                </div>
-
-                <div>
-                  <label
-                    htmlFor="state"
-                    className="block text-sm font-medium text-gray-700 mb-1"
-                  >
-                    State *
-                  </label>
-                  <input
-                    type="text"
-                    id="state"
-                    required
-                    value={state}
-                    onChange={(e) => setState(e.target.value)}
-                    placeholder="State"
-                    className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-green-500 focus:border-green-500"
-                  />
+                  <div>
+                    <label
+                      htmlFor="zipCode"
+                      className="block text-sm font-medium text-gray-700"
+                    >
+                      ZIP Code *
+                    </label>
+                    <input
+                      id="zipCode"
+                      type="text"
+                      required
+                      value={zipCode}
+                      onChange={(e) => setZipCode(e.target.value)}
+                      placeholder="54000"
+                      className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-green-500 focus:border-green-500"
+                    />
+                  </div>
                 </div>
 
-                <div>
-                  <label
-                    htmlFor="zipCode"
-                    className="block text-sm font-medium text-gray-700 mb-1"
+                <hr className="border-t border-gray-200" />
+
+                {/* Payment Method */}
+                <div className="space-y-3">
+                  <h3 className="text-base font-medium text-gray-800">
+                    Payment Method
+                  </h3>
+
+                  <div
+                    role="button"
+                    tabIndex={0}
+                    onClick={() => setPaymentMethod("cod")}
+                    onKeyDown={(e) =>
+                      e.key === "Enter" && setPaymentMethod("cod")
+                    }
+                    className={`flex items-start gap-3 p-3 rounded-md border ${
+                      paymentMethod === "cod"
+                        ? "border-green-500 bg-green-50"
+                        : "border-gray-300"
+                    } cursor-pointer`}
                   >
-                    ZIP Code *
-                  </label>
-                  <input
-                    type="text"
-                    id="zipCode"
-                    required
-                    value={zipCode}
-                    onChange={(e) => setZipCode(e.target.value)}
-                    placeholder="ZIP Code"
-                    className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-green-500 focus:border-green-500"
-                  />
-                </div>
-              </div>
-
-              <div className="border-t border-gray-200 my-6"></div>
-            </div>
-
-            {/* Payment Method */}
-            <div className="mb-8">
-              <h2 className="text-xl font-semibold text-gray-800 mb-4">
-                Payment Method
-              </h2>
-
-              <div className="space-y-4">
-                <div
-                  className={`border rounded-md p-4 cursor-pointer ${
-                    paymentMethod === "cod"
-                      ? "border-green-500 bg-green-50"
-                      : "border-gray-300"
-                  }`}
-                  onClick={() => setPaymentMethod("cod")}
-                >
-                  <div className="flex items-center">
                     <div
-                      className={`w-5 h-5 rounded-full border flex items-center justify-center mr-3 ${
+                      className={`w-5 h-5 rounded-full border flex items-center justify-center ${
                         paymentMethod === "cod"
                           ? "border-green-500 bg-green-500"
                           : "border-gray-400"
                       }`}
                     >
                       {paymentMethod === "cod" && (
-                        <div className="w-2 h-2 rounded-full bg-white"></div>
+                        <div className="w-2 h-2 rounded-full bg-white" />
                       )}
                     </div>
                     <div>
-                      <h3 className="font-medium text-gray-900">
+                      <div className="font-medium text-gray-900">
                         Cash on Delivery
-                      </h3>
-                      <p className="text-sm text-gray-600">
+                      </div>
+                      <div className="text-sm text-gray-600">
                         Pay when you receive your order
-                      </p>
+                      </div>
                     </div>
                   </div>
-                </div>
 
-                <div
-                  className={`border rounded-md p-4 cursor-pointer ${
-                    paymentMethod === "online"
-                      ? "border-green-500 bg-green-50"
-                      : "border-gray-300"
-                  }`}
-                  onClick={() => setPaymentMethod("online")}
-                >
-                  <div className="flex items-center">
+                  <div
+                    role="button"
+                    tabIndex={0}
+                    onClick={() => setPaymentMethod("online")}
+                    onKeyDown={(e) =>
+                      e.key === "Enter" && setPaymentMethod("online")
+                    }
+                    className={`flex items-start gap-3 p-3 rounded-md border ${
+                      paymentMethod === "online"
+                        ? "border-green-500 bg-green-50"
+                        : "border-gray-300"
+                    } cursor-pointer`}
+                  >
                     <div
-                      className={`w-5 h-5 rounded-full border flex items-center justify-center mr-3 ${
+                      className={`w-5 h-5 rounded-full border flex items-center justify-center ${
                         paymentMethod === "online"
                           ? "border-green-500 bg-green-500"
                           : "border-gray-400"
                       }`}
                     >
                       {paymentMethod === "online" && (
-                        <div className="w-2 h-2 rounded-full bg-white"></div>
+                        <div className="w-2 h-2 rounded-full bg-white" />
                       )}
                     </div>
                     <div>
-                      <h3 className="font-medium text-gray-900">Pay Online</h3>
-                      <p className="text-sm text-gray-600">
+                      <div className="font-medium text-gray-900">
+                        Pay Online
+                      </div>
+                      <div className="text-sm text-gray-600">
                         Secure online payment
-                      </p>
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
-            </div>
 
-            {/* Buttons */}
-            <div className="flex flex-col-reverse sm:flex-row justify-between gap-4 mt-8">
-              <button
-                type="button"
-                onClick={() => {
-                  navigate("/cart");
-                }}
-                className="px-6 py-3 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50 transition-colors"
-              >
-                Back to Cart
-              </button>
+                {/* Action buttons */}
+                <div className="flex flex-col-reverse sm:flex-row justify-between gap-3 mt-6">
+                  <button
+                    type="button"
+                    onClick={() => navigate("/cart")}
+                    className="w-full sm:w-auto px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50"
+                  >
+                    Back to Cart
+                  </button>
 
-              <button
-                type="submit"
-                className="px-6 py-3 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors"
-              >
-                Place Order
-              </button>
+                  <button
+                    type="submit"
+                    className="w-full sm:w-auto px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700"
+                  >
+                    Place Order
+                  </button>
+                </div>
+              </form>
             </div>
-          </form>
+          </div>
+
+          {/* Order summary - sticky on large screens */}
+          <div className="w-full">
+            <div className="bg-white rounded-lg shadow-sm p-4 sm:p-6 lg:sticky lg:top-20">
+              <OrderSummary products={products} />
+            </div>
+          </div>
         </div>
-      </div>
-      <div>
-        <OrderSummary products={products} />
       </div>
     </div>
   );

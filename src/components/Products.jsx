@@ -13,11 +13,11 @@ const Products = ({ filters }) => {
 
   // Always call both hooks
   const allProductsQuery = useGetAllProductsQuery(undefined, {
-    skip: filters.category !== "All Categories", // skip when filtering by category
+    skip: filters.category !== "All Categories",
   });
 
   const categoryProductsQuery = useGetCategoryProdcutsQuery(filters.category, {
-    skip: filters.category === "All Categories", // skip when not needed
+    skip: filters.category === "All Categories",
   });
 
   // Pick the correct query result
@@ -29,7 +29,7 @@ const Products = ({ filters }) => {
   // Handle loading
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="min-h-[50vh] flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-600 mx-auto"></div>
           <p className="mt-4 text-gray-600">Loading products...</p>
@@ -41,7 +41,7 @@ const Products = ({ filters }) => {
   // Handle error
   if (isError) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="min-h-[50vh] flex items-center justify-center">
         <div className="text-center">
           <div className="text-red-500 text-2xl mb-4">Error</div>
           <p className="text-gray-600">
@@ -63,7 +63,6 @@ const Products = ({ filters }) => {
   // Clone and modify data
   let processedData = [...data];
 
-  // 🔹 Only modify images when it's category-based query
   if (isCategory) {
     processedData = processedData.map((product) => ({
       ...product,
@@ -82,24 +81,25 @@ const Products = ({ filters }) => {
     processedData.sort((a, b) => b.rating.rate - a.rating.rate);
   }
 
+  // Search filter
   processedData = processedData.filter((p) => {
     return (
       p.title.toLowerCase().includes(toSearch?.toLowerCase()) ||
       p.description.toLowerCase().includes(toSearch?.toLowerCase() || "")
     );
   });
+
   const isListView = filters.view === "list";
+
+  // Empty state
   if (processedData.length === 0) {
     return (
-      <div
-        id="productsSection"
-        className="flex flex-col items-center justify-center h-[50vh] text-center space-y-4"
-      >
+      <div className="flex flex-col items-center justify-center h-[50vh] text-center space-y-4 px-4">
         <PackageSearch className="w-16 h-16 text-gray-400" />
         <h2 className="text-xl font-semibold text-gray-700">
           No Products Found
         </h2>
-        <p className="text-gray-500">
+        <p className="text-gray-500 max-w-md">
           We couldn’t find any results matching your search. Try adjusting your
           keywords or filters.
         </p>
@@ -112,19 +112,13 @@ const Products = ({ filters }) => {
       </div>
     );
   }
+
   return (
-    <div
-      id="productsSection"
-      className="container flex items-center justify-center mx-auto px-4 py-8"
-    >
+    <div id="productsSection" className="container mx-auto px-4 py-8">
       {isListView ? (
-        <div className="flex flex-col w-[80%] gap-6">
+        <div className="flex flex-col gap-4">
           {processedData.map((product) => (
-            <ProductListCard
-              className="w-full"
-              key={product.id}
-              product={product}
-            />
+            <ProductListCard key={product.id} product={product} />
           ))}
         </div>
       ) : (

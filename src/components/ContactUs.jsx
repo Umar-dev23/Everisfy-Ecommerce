@@ -8,6 +8,7 @@ const ContactUs = () => {
     email: "",
     message: "",
   });
+  const [charCount, setCharCount] = useState(0);
 
   const contactData = [
     {
@@ -32,23 +33,16 @@ const ContactUs = () => {
       description: "support@example.com",
     },
   ];
-  const [charCount, setCharCount] = useState(0);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
+    setFormData((prev) => ({ ...prev, [name]: value }));
 
-    if (name === "message") {
-      setCharCount(value.length);
-    }
+    if (name === "message") setCharCount(value.length);
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Here you would typically handle form submission
     console.log("Form submitted:", formData);
     alert("Thank you for your message! We will get back to you soon.");
     setFormData({ name: "", email: "", message: "" });
@@ -58,24 +52,23 @@ const ContactUs = () => {
   return (
     <div
       id="contact"
-      className="min-h-screen bg-green-50 flex flex-col items-center justify-center w-[100%] p-4"
+      className="min-h-screen bg-green-50 flex flex-col items-center justify-center w-full px-4 py-10"
     >
-      <div className="w-[60%] p-5  overflow-hidden">
-        {/* Header */}
-        <div className="  p-8 text-center">
-          <h1 className="text-4xl text-green-500 font-bold mb-3">
-            Get In Touch
-          </h1>
-          <p className="text-lg">
-            Have a question or want to work together? We'd love to hear from
-            you. Send us a message and we'll respond as soon as possible.
-          </p>
-        </div>
+      {/* Header */}
+      <div className="max-w-2xl md:max-w-3xl lg:max-w-4xl w-full mb-10 text-center">
+        <h1 className="text-2xl md:text-4xl text-green-500 font-bold mb-3">
+          Get In Touch
+        </h1>
+        <p className="text-base md:text-lg text-gray-700">
+          Have a question or want to work together? We'd love to hear from you.
+          Send us a message and we'll respond as soon as possible.
+        </p>
       </div>
+
       {/* Form */}
       <form
         onSubmit={handleSubmit}
-        className="p-8 w-[60%] bg-white rounded-2xl shadow-xl shadow-green-900/30 space-y-6"
+        className="w-full max-w-lg md:max-w-2xl bg-white rounded-2xl shadow-xl shadow-green-900/20 p-6 md:p-8 space-y-6"
       >
         {/* Name Field */}
         <div>
@@ -151,7 +144,7 @@ const ContactUs = () => {
               className="pl-10 w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-colors resize-vertical"
             />
           </div>
-          <div className="text-right text-sm text-gray-500 mt-1">
+          <div className="text-right text-xs md:text-sm text-gray-500 mt-1">
             {charCount}/1000 characters
           </div>
         </div>
@@ -159,19 +152,19 @@ const ContactUs = () => {
         {/* Submit Button */}
         <button
           type="submit"
-          className="w-[30%] bg-green-600 hover:bg-green-700 text-white py-3 px-3 rounded-lg font-medium transition-colors flex items-center justify-center"
+          className="w-full sm:w-auto bg-green-600 hover:bg-green-700 text-white py-3 px-6 rounded-lg font-medium transition-colors flex items-center justify-center mx-auto"
         >
           <Send className="h-5 w-5 mr-2" />
           Send Message
         </button>
       </form>
-      <div className=" flex items-center justify-evenly p-8">
-        <div className="w-[100%] justify-evenly flex gap-10 ">
-          {contactData.map((item, index) => (
-            <ContactCard key={index} {...item} />
-          ))}
-        </div>
-      </div>
+
+      {/* Contact Info Cards */}
+      <div className="grid grid-cols-1 mt-10 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+  {contactData.map((item, index) => (
+    <ContactCard key={index} {...item} />
+  ))}
+</div>
     </div>
   );
 };

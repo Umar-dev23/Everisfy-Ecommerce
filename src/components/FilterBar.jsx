@@ -35,38 +35,29 @@ const FilterBar = ({ selectedFilters, onFilterChange }) => {
   ];
 
   const handleCategoryChange = (value) => {
-    onFilterChange({
-      ...selectedFilters,
-      category: value,
-    });
+    onFilterChange({ ...selectedFilters, category: value });
   };
 
   const handleSortChange = (value) => {
-    onFilterChange({
-      ...selectedFilters,
-      sort: value,
-    });
+    onFilterChange({ ...selectedFilters, sort: value });
   };
 
   const handleViewChange = (viewType) => {
-    onFilterChange({
-      ...selectedFilters,
-      view: viewType,
-    });
+    onFilterChange({ ...selectedFilters, view: viewType });
   };
 
   return (
-    <div className="flex flex-col md:flex-row justify-center items-center p-3 bg-white gap-4 w-[100%] border border-gray-200 rounded-lg shadow-sm mb-4">
+    <div className="flex flex-col md:flex-row items-center justify-between bg-white p-4 border border-gray-200 rounded-lg shadow-sm gap-4 w-full">
       {/* Category Filter */}
-      <div className="w-full items-center justify-start flex flex-col md:w-4/4">
-        <label className="block text-xs text-left font-medium text-gray-700 mb-1">
+      <div className="w-full md:w-1/3">
+        <label className="block text-xs font-medium text-gray-600 mb-1">
           Category
         </label>
         <Select
           value={selectedFilters.category}
           onValueChange={handleCategoryChange}
         >
-          <SelectTrigger className="h-8 text-sm">
+          <SelectTrigger className="h-9 text-sm">
             <SelectValue placeholder="Select category" />
           </SelectTrigger>
           <SelectContent>
@@ -80,12 +71,12 @@ const FilterBar = ({ selectedFilters, onFilterChange }) => {
       </div>
 
       {/* Sort Filter */}
-      <div className="w-full items-center justify-start flex flex-col md:w-4/4">
-        <label className="block text-xs  font-medium text-gray-700 mb-1">
+      <div className="w-full md:w-1/3">
+        <label className="block text-xs font-medium text-gray-600 mb-1">
           Sort by
         </label>
         <Select value={selectedFilters.sort} onValueChange={handleSortChange}>
-          <SelectTrigger className="h-8 text-sm">
+          <SelectTrigger className="h-9 text-sm">
             <SelectValue placeholder="Sort by" />
           </SelectTrigger>
           <SelectContent>
@@ -99,11 +90,11 @@ const FilterBar = ({ selectedFilters, onFilterChange }) => {
       </div>
 
       {/* View Toggle */}
-      <div className="w-full items-center justify-start flex flex-col md:w-4/4">
-        <label className="block text-xs font-medium text-gray-700 mb-1">
+      <div className="w-full md:w-1/3">
+        <label className="block text-xs font-medium text-gray-600 mb-1">
           View
         </label>
-        <div className="flex space-x-1">
+        <div className="flex gap-2">
           {viewOptions.map((view) => (
             <Button
               key={view.value}
@@ -112,7 +103,7 @@ const FilterBar = ({ selectedFilters, onFilterChange }) => {
               }
               size="sm"
               onClick={() => handleViewChange(view.value)}
-              className={`h-8 px-2 ${
+              className={`h-9 w-9 flex items-center justify-center ${
                 selectedFilters.view === view.value
                   ? "bg-green-500 hover:bg-green-600 text-white"
                   : "bg-white text-gray-700 border-gray-300 hover:bg-gray-50"

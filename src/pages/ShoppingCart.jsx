@@ -61,99 +61,138 @@ const ShoppingCart = () => {
   const total = subtotal + shippingCost + tax;
 
   return (
-    <div className="container mx-auto px-4 py-4">
-      <div className="flex py-3 justify-between">
-        <h1 className="text-3xl font-bold text-gray-900 mb-6">Shopping Cart</h1>
-        <Button
-          onClick={handleClearCart}
-          className="w-[10%] bg- border-red-600 border-2 text-red-600 mt-6"
-          size="lg"
-        >
-          Clear Cart
-        </Button>
+    <div className="container mx-auto px-4 py-6">
+      {/* Header row: title + clear button */}
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
+        <h1 className="text-2xl md:text-3xl font-bold text-gray-900">
+          Shopping Cart
+        </h1>
+
+        <div className="flex gap-3 w-full md:w-auto">
+          <Button
+            onClick={handleClearCart}
+            variant="destructive"
+            className="w-full md:w-auto bg-transparent border border-red-600 text-red-600 hover:bg-red-50"
+            size="sm"
+          >
+            Clear Cart
+          </Button>
+
+          <Button
+            onClick={() => navigate("/")}
+            variant="outline"
+            className="w-full md:w-auto"
+            size="sm"
+          >
+            Continue Shopping
+          </Button>
+        </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        {/* Cart Items */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* Items column (span 2 on large screens) */}
         <div className="lg:col-span-2">
           {cartItems.length === 0 ? (
             <Alert color="info">
               Your cart is empty. Continue shopping to add items.
             </Alert>
           ) : (
-            <div className="space-y-6">
+            <div className="space-y-4">
               {cartItems.map((item) => (
                 <Card
                   key={item.id}
-                  className="flex flex-row gap-4 p-4 bg-white shadow-md"
+                  className="flex flex-row gap-4 p-4 bg-white shadow-sm hover:shadow-md transition"
                 >
                   {/* Product Image */}
-                  <div className="w-40 h-40 flex-shrink-0">
-                    <img
-                      className="object-contain w-full h-full"
-                      src={item.image}
-                      alt={item.title}
-                    />
+                  <div className="flex-shrink-0 w-20 h-20 sm:w-28 sm:h-28 bg-gray-50 p-2 rounded">
+                    <button
+                      onClick={() => navigate(`/product/?id=${item.id}`)}
+                      className="w-full h-full"
+                    >
+                      <img
+                        className="w-full h-full object-contain"
+                        src={item.image}
+                        alt={item.title}
+                      />
+                    </button>
                   </div>
 
-                  {/* Product Details */}
-                  <div className="flex flex-col justify-between flex-1">
+                  {/* Product text area */}
+                  <div className="flex flex-col justify-between flex-1 min-w-0">
                     <div>
-                      <div className="flex justify-between">
-                        <h3 className="text-lg font-semibold text-gray-900">
+                      <div className="flex justify-between items-start gap-4">
+                        <button
+                          onClick={() => navigate(`/product/?id=${item.id}`)}
+                          className="text-sm sm:text-base font-semibold text-left text-gray-900 hover:underline line-clamp-2"
+                        >
                           {item.title}
-                        </h3>
-                        <p className="text-xl font-bold text-gray-900">
+                        </button>
+
+                        <p className="text-base sm:text-lg font-bold text-gray-900">
                           ${item.price.toFixed(2)}
                         </p>
                       </div>
-                      <p className="mt-2 text-sm font-semibold text-gray-900">
+
+                      <p className="mt-1 text-xs sm:text-sm text-gray-600">
                         ({item.category})
                       </p>
-                      <div className="flex gap-4 items-center">
+
+                      <div className="mt-2 flex items-center gap-2 text-sm text-gray-500">
                         <div className="flex items-center">
                           {[...Array(5)].map((_, i) => (
                             <Star
                               key={i}
-                              className={`h-4 w-4 ${
+                              className={`h-3 w-3 sm:h-4 sm:w-4 ${
                                 i < Math.floor(item.rating?.rate || 0)
                                   ? "text-yellow-400 fill-yellow-400"
                                   : "text-gray-300"
                               }`}
                             />
                           ))}
-                        </div>{" "}
-                        <p className="mt-1 text-sm text-gray-500">
-                          {item.rating.rate} ({item.rating.count} reviews)
-                        </p>
+                        </div>
+                        <span className="text-xs sm:text-sm">
+                          {item.rating?.rate ?? "0"} ({item.rating?.count ?? 0})
+                        </span>
                       </div>
                     </div>
 
-                    {/* Price & Quantity */}
-                    <div className="flex items-center justify-between mt-4">
-                      <div className="flex items-center border rounded-lg">
+                    {/* controls */}
+                    <div className="mt-3 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                      <div className="flex items-center border rounded-md overflow-hidden">
                         <button
-                          className="px-3 py-1 text-lg font-bold text-gray-700 hover:bg-gray-200"
+                          className="px-3 py-2 text-lg font-semibold text-gray-700 hover:bg-gray-100"
                           onClick={() => updateQuantity(item.id, -1)}
+                          aria-label="Decrease quantity"
                         >
                           −
                         </button>
-                        <span className="px-4 text-lg">{item.quantity}</span>
+                        <span className="px-4 text-sm sm:text-base">{item.quantity}</span>
                         <button
-                          className="px-3 py-1 text-lg font-bold text-gray-700 hover:bg-gray-200"
+                          className="px-3 py-2 text-lg font-semibold text-gray-700 hover:bg-gray-100"
                           onClick={() => updateQuantity(item.id, 1)}
+                          aria-label="Increase quantity"
                         >
                           +
                         </button>
                       </div>
 
-                      <Button
-                        className="text-red-500 border-none bg-white hover:text-red-800 hover:bg-white"
-                        size="sm"
-                        onClick={() => removeItem(item.id)}
-                      >
-                        Remove
-                      </Button>
+                      <div className="flex items-center gap-2">
+                        <Button
+                          className="bg-white border text-red-600 hover:text-red-800 hover:bg-white"
+                          size="sm"
+                          onClick={() => removeItem(item.id)}
+                        >
+                          Remove
+                        </Button>
+
+                        <Button
+                          className="bg-green-600 text-white hover:bg-green-700"
+                          size="sm"
+                          onClick={() => navigate(`/checkout`)}
+                        >
+                          Buy Now
+                        </Button>
+                      </div>
                     </div>
                   </div>
                 </Card>
@@ -162,32 +201,32 @@ const ShoppingCart = () => {
           )}
         </div>
 
-        {/* Order Summary */}
+        {/* Summary column */}
         <div>
-          <Card className="p-6 shadow-md">
-            <h2 className="text-xl font-bold text-gray-900 mb-4">
+          <Card className="p-4 sm:p-6 shadow-sm">
+            <h2 className="text-lg sm:text-xl font-bold text-gray-900 mb-4">
               Order Summary
             </h2>
 
-            <div className="space-y-2">
+            <div className="space-y-3 text-sm text-gray-700">
               <div className="flex justify-between">
-                <span>Original Price</span>
+                <span>Subtotal</span>
                 <span>${subtotal.toFixed(2)}</span>
               </div>
 
               <div className="flex justify-between">
-                <span className="text-gray-600">Shipping:</span>
+                <span>Shipping</span>
                 <span className="font-medium text-green-600">Free</span>
               </div>
-              
+
               <div className="flex justify-between">
-                <span>Tax</span>
+                <span>Tax (8%)</span>
                 <span>${tax.toFixed(2)}</span>
               </div>
 
-              <hr className="my-4" />
+              <hr className="my-3" />
 
-              <div className="flex justify-between font-bold text-lg">
+              <div className="flex justify-between items-center font-bold text-lg">
                 <span>Total</span>
                 <span>${total.toFixed(2)}</span>
               </div>
@@ -197,33 +236,31 @@ const ShoppingCart = () => {
               onClick={() => {
                 navigate("/checkout");
               }}
-              className="w-full bg-green-600 mt-6"
-              size="lg"
+              className="w-full py-3 bg-green-600 mt-5"
+              size="md"
             >
               Proceed to Checkout
             </Button>
 
             <div className="text-center mt-4">
-              <a href="/" className="text-blue-600 hover:underline">
-                or Continue Shopping →
-              </a>
+              <button
+                onClick={() => navigate("/")}
+                className="text-sm text-blue-600 hover:underline"
+              >
+                Continue shopping →
+              </button>
             </div>
 
-            <div className="mt-6 ">
-              <h3 className="font-medium mb-2">
-                Do you have a voucher or gift card?
-              </h3>
-              <div className="flex flex-wrap gap-1">
+            <div className="mt-4">
+              <h3 className="font-medium mb-2 text-sm">Have a voucher?</h3>
+              <div className="flex gap-2">
                 <input
                   type="text"
                   placeholder="Enter code"
-                  className="flex-1 px-4 border border-gray-300 rounded-lg"
+                  className="flex-1 px-3 py-2 border border-gray-300 rounded-md text-sm"
                 />
-                <Button
-                  size="lg"
-                  className="px-3 py-2 text-xs bg-green-600 rounded-lg"
-                >
-                  Apply Code
+                <Button size="sm" className="px-3 py-2 bg-green-600">
+                  Apply
                 </Button>
               </div>
             </div>

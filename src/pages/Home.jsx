@@ -15,17 +15,33 @@ const Home = () => {
     setFilters(newFilters);
     // You can also trigger API calls or filter products here
   };
+
   return (
-    <div className="w-[100%] flex flex-col items-center">
-      <Hero />
-      <div className="flex flex-col items-center">
-        <FilterBar
-          selectedFilters={filters}
-          onFilterChange={handleFilterChange}
-        />
-      </div>
-      <Products filters={filters} />
-      <ContactUs />
+    <div className="w-full flex flex-col items-center">
+      {/* Hero Section */}
+      <section className="w-full">
+        <Hero />
+      </section>
+
+      {/* Filter Bar */}
+      <section className="w-full max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 my-6">
+          <FilterBar
+            selectedFilters={filters}
+            onFilterChange={handleFilterChange}
+          />
+        </div>
+      </section>
+
+      {/* Products */}
+      <section className="w-full max-w-7xl px-4 sm:px-6 lg:px-8">
+        <Products filters={filters} />
+      </section>
+
+      {/* Contact Us */}
+      <section className="w-full">
+        <ContactUs />
+      </section>
     </div>
   );
 };
