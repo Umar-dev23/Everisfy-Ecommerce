@@ -27,7 +27,7 @@ const Footer = () => {
               }}
             >
               <BriefcaseBusiness className=" text-green-500" />
-              <span className="text-2xl font-bold text-gray-900  text-green-500">
+              <span className="text-2xl font-bold text-green-500">
                 EVersify
               </span>
             </div>

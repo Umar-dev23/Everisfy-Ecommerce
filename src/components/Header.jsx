@@ -1,4 +1,5 @@
 import { useNavigate } from "react-router-dom";
+import React, { useState } from "react";
 import {
   BriefcaseBusiness,
   Search,
@@ -9,8 +10,13 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 
-const Header = () => {
+const Header = ({ onChangeInput }) => {
   const navigate = useNavigate(); // ✅ fix here
+  const [search, setSearch] = useState("");
+
+  function handleSearch() {
+    onChangeInput(search);
+  }
 
   return (
     <header className="bg-white border-b border-gray-200 px-8 py-4 sticky top-0 z-50">
@@ -29,6 +35,12 @@ const Header = () => {
           <div className="relative">
             <Input
               type="text"
+              onChange={(e) => {
+                const newValue=e.target.value;
+                setSearch(newValue);
+                handleSearch();
+              }}
+              value={search}
               placeholder="Search products..."
               className="px-12 py-3 w-[150%] text-lg border-gray-300 
                          focus:ring-1 focus:shadow-lg focus:shadow-green-200 

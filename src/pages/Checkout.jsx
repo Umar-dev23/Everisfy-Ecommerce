@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import OrderSummary from "@/components/orderSummary";
+import OrderSummary from "@/components/OrderSummary";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 

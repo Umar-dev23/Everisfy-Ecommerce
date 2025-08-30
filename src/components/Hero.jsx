@@ -64,9 +64,9 @@ const Hero = () => {
                 <p className="text-md sm:text-base mb-4">
                   Up to 50% off on selected items
                 </p>
-                <button className="bg-white text-green-600 px-4 py-2 rounded-full font-semibold hover:bg-green-50 transition-colors text-md sm:text-base">
+                <a href="#productsSection" className="bg-white text-green-600 px-4 py-2 rounded-full font-semibold hover:bg-green-50 transition-colors text-md sm:text-base">
                   Shop Now
-                </button>
+                </a>
               </div>
             </div>
           </div>
