@@ -4,7 +4,6 @@ import ContactCard from "@/components/ContactCard";
 import { useForm } from "react-hook-form";
 import emailjs from "@emailjs/browser";
 
-
 const contactData = [
   {
     icon: MessageSquare,
@@ -29,7 +28,6 @@ const contactData = [
   },
 ];
 const ContactUs = () => {
-
   const form = useForm({
     defaultValues: {
       name: "",
@@ -41,14 +39,20 @@ const ContactUs = () => {
   const { errors } = formState;
 
   function onSubmit(data) {
-    const templateParams = {
+    const publicKey = import.meta.env.VITE_PUBLIC_KEY;
+    const serviceId = import.meta.env.VITE_SERVICE_ID;
+    const templateAdminParams = {
+      name: data.name,
+      message: data.message,
+    };
+    const templateUserParams = {
       name: data.name,
       email: data.email,
       message: data.message,
     };
     emailjs
-      .send(import.meta.env.VITE_SERVICE_ID, import.meta.env.VITE_TEMPLATE_ID, templateParams, {
-        publicKey: import.meta.env.VITE_PUBLIC_KEY,
+      .send(serviceId, "template_69dkmea", templateAdminParams, {
+        publicKey: publicKey,
         blockList: {
           watchVariable: "userEmail",
         },
@@ -58,10 +62,29 @@ const ContactUs = () => {
       })
       .then(
         (response) => {
-          console.log("SUCCESS!", response.status, response.text);
+          console.log("SUCCESS! admin", response.status, response.text);
         },
         (err) => {
-          console.log("FAILED...", err);
+          console.log("FAILED admin...", err);
+        }
+      );
+
+    emailjs
+      .send(serviceId, "template_bktzmv7", templateUserParams, {
+        publicKey: publicKey,
+        blockList: {
+          watchVariable: "userEmail",
+        },
+        limitRate: {
+          throttle: 0, // turn off the limit rate for these requests
+        },
+      })
+      .then(
+        (response) => {
+          console.log("SUCCESS! user", response.status, response.text);
+        },
+        (err) => {
+          console.log("FAILED user...", err);
         }
       );
   }
