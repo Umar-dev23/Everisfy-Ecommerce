@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import { Send, User, Mail, MessageSquare, Phone } from "lucide-react";
 import ContactCard from "@/components/ContactCard";
 import { useForm } from "react-hook-form";
+import emailjs from "@emailjs/browser";
+
 
 const contactData = [
   {
@@ -27,6 +29,7 @@ const contactData = [
   },
 ];
 const ContactUs = () => {
+
   const form = useForm({
     defaultValues: {
       name: "",
@@ -38,7 +41,29 @@ const ContactUs = () => {
   const { errors } = formState;
 
   function onSubmit(data) {
-    console.log("data in From: ", data);
+    const templateParams = {
+      name: data.name,
+      email: data.email,
+      message: data.message,
+    };
+    emailjs
+      .send(import.meta.env.VITE_SERVICE_ID, import.meta.env.VITE_TEMPLATE_ID, templateParams, {
+        publicKey: import.meta.env.VITE_PUBLIC_KEY,
+        blockList: {
+          watchVariable: "userEmail",
+        },
+        limitRate: {
+          throttle: 0, // turn off the limit rate for these requests
+        },
+      })
+      .then(
+        (response) => {
+          console.log("SUCCESS!", response.status, response.text);
+        },
+        (err) => {
+          console.log("FAILED...", err);
+        }
+      );
   }
   return (
     <div
